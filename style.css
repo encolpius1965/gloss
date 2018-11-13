@@ -1,0 +1,10 @@
+body {background-color: beige;}
+fieldset {background-color: beige;}
+fieldset.manager  {background-color: beige ;}
+fieldset.lexems  {background-color: beige ;}
+#txt_right { color: green ; }
+#txt_wrong { color: red ; }
+#txt_thinking {  background-color:beige ; color: beige ; }
+#txt_good { color: green ; } 
+#txt_disclaimer { color: green ; } 
+#txt_stats { background-color: lavender; text-align: center   }
