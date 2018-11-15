@@ -20,6 +20,6 @@ echo "USER=$UserId";
 
 $conn = new Connection();
 
- echo "     OK";
+ echo "     OKL";
 
 ?>
