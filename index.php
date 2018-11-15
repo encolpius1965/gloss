@@ -18,7 +18,8 @@ require_once( "classes/connection.php" );
 
 echo "USER=$UserId";
 
+$conn = new Connection();
 
+ echo "     OK";
 
- 
 ?>
