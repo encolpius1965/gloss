@@ -19,10 +19,16 @@ function __construct()
 	$db_name = 'gloss1';
 	$db_charset = 'utf8';
 
-    
+    echo "<p> NOS01";
     
 	$is_connected = @mysql_connect($db_host, $db_username, $db_password);
+    
+    echo "<p> NOS02";
+    
 	$is_db_selected = $is_connected ? @mysql_select_db($db_name) : FALSE; 
+ 
+     echo "<p> NOS03";
+
  
 	$errors = array();
  
