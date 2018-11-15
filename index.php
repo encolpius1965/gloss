@@ -2,7 +2,7 @@
  session_start();
 header ("Content-Type: text/html; charset=utf-8");
 
-/* !!!
+/* !!!  тут не вышло. пока закроем глаза.
 if (!isset($_SESSION['UserId'])     OR ($_SESSION['UserId']==0)        )       
                 header('Location: verify.php');   
                 // $UserId = 1;
@@ -13,10 +13,10 @@ if (!isset($_SESSION['UserId'])     OR ($_SESSION['UserId']==0)        )
 
 $UserId = 1;
 
-echo $UserId;
 
-// require_once( "classes/connection.php" );
+require_once( "classes/connection.php" );
 
+echo "USER=$UserId";
 
 
 
