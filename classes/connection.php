@@ -13,13 +13,30 @@ function __construct()
 # Служит для отладки, показывает все ошибки, предупреждения и т.д.
 // error_reporting(E_ALL);
 
+// локальный MySQL
     $db_host = 'localhost';
 	$db_username = 'mysql';
 	$db_password = 'mysql';
 	$db_name = 'gloss1';
+	$db_charset = 'utf8'; 
+
+// локальная Хероку    
+    $db_host = 'localhost';
+	$db_username = 'mysql';
+	$db_password = 'mysql';
+	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
 
-    echo "<p> NOS01";
+// Реальная хероку
+    $db_host = 'eu-cdbr-west-02.cleardb.net';
+	$db_username = 'b0f439327ec632';
+	$db_password = 'bf8363b2';
+	$db_name = 'heroku_846065d530579e0';
+	$db_charset = 'utf8';
+
+    
+    
+    echo "<p> NOS801";
     
 	$is_connected = @mysql_connect($db_host, $db_username, $db_password);
     
