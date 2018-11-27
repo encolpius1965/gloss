@@ -36,16 +36,15 @@ function __construct()
 
     
     
-    echo "<p> NOS801";
+    echo "<p> Before  Connection";
     
 	$is_connected = @mysql_connect($db_host, $db_username, $db_password);
     
-    echo "<p> NOS02";
+    echo "<p> After MySQL Connection. is_connected=$is_connected";
     
 	$is_db_selected = $is_connected ? @mysql_select_db($db_name) : FALSE; 
  
-     echo "<p> NOS03";
-
+   echo "<p> After DB Connection. is_db_selected=$is_db_selected";
  
 	$errors = array();
  
