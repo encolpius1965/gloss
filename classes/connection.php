@@ -26,7 +26,7 @@ function __construct()
 	$db_password = 'mysql';
 	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
-/*
+
 // Реальная хероку
     $db_host = 'eu-cdbr-west-02.cleardb.net';
 	$db_username = 'b0f439327ec632';
@@ -34,9 +34,9 @@ function __construct()
 	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
 
-  */  
+  
     
-    echo "<p> 1__Before  Connection";
+    echo "<p> 2__Before  Connection";
     
 	// $is_connected = @mysql_connect($db_host, $db_username, $db_password);
 // !    $is_connected = mysql_connect($db_host, $db_username, $db_password);
