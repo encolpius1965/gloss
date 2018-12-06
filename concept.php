@@ -34,68 +34,33 @@ $newLine="";  // сделать подсказку
 
 // разбираемся с текущим режимом
   // заполним справочник концептов
-     $sql = "SELECT * FROM USER WHERE USER_ID=$UserId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
+     $row=$conn->GetRow("USER", "USER_ID=$UserId");
 			      $lAppend = $row[LAPPEND];
                   $lEdit = $row[LEDIT];
                   $lDelete=$row[LDELETE];
                   $lMessage=$row[LMESSAGE];
                   $selectConceptId=$row[CONCEPT_ID];
-            }
-        }
 
         
 if  (!empty($_POST['f_delete']))  // отработка
     {    
       $selectConceptId= empty($_POST['SelectConcept']) ?  0 : $_POST['SelectConcept']; 
       $lDelete=1;
-      
-                    $sql = "UPDATE USER SET ".
-                 " LDELETE=$lDelete ".
-                 "WHERE USER_ID=$UserId";				
+        $conn->UpdateTable("USER",
+                              Array("LDELETE"=>$lDelete),
+                           "USER_ID=$UserId");                              
 
-            $result = mysql_query($sql) 
-            or die('Query error: <code>'.$sql.'</code>');
-
-            // echo "UserId=$UserId, selectConceptId=$selectConceptId ";
+  
+         $conn->Proc("DeleteConcept", Array( $UserId, $selectConceptId));            
  
-            
-            $sql = " CALL DeleteConcept($UserId, $selectConceptId)  ";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
- 
-
-            $sql = "SELECT * FROM USER WHERE USER_ID=$UserId"; 
-                $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
-                if ( is_resource($result) ) 
-                {
-			
-                        while ( $row = mysql_fetch_assoc($result) )
-                        {
-                            $DelRes = $row[DELRES];
-                        }
-                }
+         $row=$conn->GetRow("USER", "USER_ID=$UserId");  
+         $DelRes = $row[DELRES];
 
             //    echo "lDelRes=$lDelRes";
             // а теперь так - если что-то пошло не так, включаем режим сообщений
                 if ($DelRes < 0)
                 {                     
                    $lMessage = 1;
-                   /*
-                    $sql = "UPDATE USER SET ".
-                     " LMESSAGE=$lMessage ".
-                     "WHERE USER_ID=$UserId";				
-
-                  $result = mysql_query($sql) 
-                  or die('Query error: <code>'.$sql.'</code>');
-*/                   
                   $Message =  ($DelRes == -1)     ?  "Удаление невозможно. Не выделен элемент для удаления"  : 
                                                        "Удаление невозможно. Имеются лексемы, ассоциированные с данным понятием. "           ;  
                    
@@ -112,12 +77,7 @@ if  (!empty($_POST['f_append']))  // отработка
    
  {
       $lAppend = 1;
-              $sql = "UPDATE USER SET ".
-                 " LAPPEND=$lAppend ".
-                 "WHERE USER_ID=$UserId";				
-
-            $result = mysql_query($sql) 
-            or die('Query error: <code>'.$sql.'</code>');
+      $conn->UpdateTable("USER", Array("LAPPEND"=>$lAppend), "USER_ID=$UserId");
  }
 
  
@@ -129,32 +89,19 @@ if  (!empty($_POST['f_append']))  // отработка
       
        if  ($selectConceptId>0)
        { 
-              $lEdit = 1;   
-              $sql = "UPDATE USER SET ".
-                 " LEDIT=$lEdit ".
-                 " ,CONCEPT_ID=$selectConceptId ".
-                 "WHERE USER_ID=$UserId";				
-            $result = mysql_query($sql) 
-            or die('Query error: <code>'.$sql.'</code>');
-            
-        $sql = "SELECT * FROM CONCEPT WHERE USER_ID=$UserId AND CONCEPT_ID=$selectConceptId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
-			      $newLine = $row[NAME];
-            }
-        }
-       } 
+              $lEdit = 1; 
+              $conn->UpdateTable("USER",Array("LEDIT"=>$lEdit,  "CONCEPT_ID"=>$selectConceptId),"USER_ID=$UserId");           
+
+              $row=$conn->GetRow("CONCEPT","USER_ID=$UserId AND CONCEPT_ID=$selectConceptId");  
+             $newLine = $row[NAME];
+       }   
        else 
        {
-           $lEdit = 0; 
-           $lMessage=1;
-           $Message="Не выделен элемент для редактирования";
-       }           
+                     $lEdit = 0; 
+                     $lMessage=1;
+                     $Message="Не выделен элемент для редактирования";
+
+       }   
        
  }
 
@@ -167,15 +114,8 @@ if  (!empty($_POST['f_reset']))  // отработка
 
    if ($lEdit==1)
           $lEdit=0;
-
-   $sql = "UPDATE USER SET ".
-                 " LAPPEND=$lAppend ".
-                 " ,LEDIT=$lEdit ".
-                 " ,LDELETE=$lDelete ".
-                 "WHERE USER_ID=$UserId";				
-            $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
-   
+      
+    $conn->UpdateTable("USER", Array ("LAPPEND"=>$lAppend, "LEDIT"=>$lEdit,"LDELETE"=>$lDelete), "USER_ID=>$UserId");				
     
 }    
 
@@ -189,12 +129,7 @@ if  (!empty($_POST['f_reset']))  // отработка
    {
      $lDelete=0;
      $lMessage=0;
-              $sql = "UPDATE USER SET ".
-                 " LDELETE=$lDelete ".
-                 " ,LMESSAGE=$lMessage ".
-                 "WHERE USER_ID=$UserId";				
-            $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
+             $conn->UpdateTable("USER",Array("LDELETE"=>$lDelete,"LMESSAGE"=>$lMessage),"USER_ID=$UserId");
 
    }       
 
@@ -203,38 +138,15 @@ if  (!empty($_POST['f_reset']))  // отработка
       {
        $newLine= empty($_POST['newLine']) ?  $newLine : $_POST['newLine'];    
 //       
-                   
-                    $sql = " CALL AddNewConcept($UserId,  '".$newLine."'  )  ";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-                                /*
-                                        $sql = "SELECT * FROM USER WHERE USER_ID=$UserId";
-                                        $result = mysql_query($sql) 
-                                        or die('Query error: <code>'.$sql.'</code>');
-                                */        
+                 $conn->Proc("AddNewConcept", Array( $UserId, $newLine));                      
 //
       // добавим новую строку     
        $lAppend = 0;
-              $sql = "UPDATE USER SET ".
-                 " LAPPEND=$lAppend ".
-                 "WHERE USER_ID=$UserId";				
-            $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
-                        
-                        
-                        $sql = "SELECT * FROM USER WHERE USER_ID=$UserId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
-			      $lAppend = $row[LAPPEND];
+       $conn->UpdateTable("USER",Array("LAPPEND"=>$lAppend),"USER_ID=$UserId");
+       $row=$conn->GetRow("USER", "USER_ID=$UserId");  
+ 			      $lAppend = $row[LAPPEND];
                   $lEdit = $row[LEDIT];
                   $selectConceptId=$row[CONCEPT_ID];
-            }
-        }
     
                         
 
@@ -244,20 +156,12 @@ if  (!empty($_POST['f_reset']))  // отработка
       if ($lEdit==1) 
       {
         $lEdit = 0;  
-              $sql = "UPDATE USER SET ".
-                 " LEDIT=$lEdit ".
-                 "WHERE USER_ID=$UserId";				
-            $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
-  
+        $conn->UpdateTable("USER",Array("LEDIT"=>$lEdit),"USER_ID=$UserId");
+
   
           $newLine= empty($_POST['newLine']) ?  $newLine : $_POST['newLine']; 
+          $conn->UpdateTable("CONCEPT",Array("NAME"=>$newLine),"USER_ID=$UserId AND CONCEPT_ID=$selectConceptId");
   
-              $sql = "UPDATE  CONCEPT SET ".
-                 " NAME= '".$newLine."' ".    
-                 "WHERE USER_ID=$UserId AND CONCEPT_ID=$selectConceptId";				
-            $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
   
       }    
       
@@ -284,21 +188,8 @@ if  (!empty($_POST['f_reset']))  // отработка
  
  
   // заполним справочник концептов
-     $sql = "SELECT * FROM CONCEPT WHERE USER_ID=$UserId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
-			      $key = $row[CONCEPT_ID];
-                  $value =$row[NAME];
-                  $aConcept[$key]=$value;
-            }
-        }
-
-        $count = count($aConcept);
+      $aConcept=$conn->GetColumn("CONCEPT", "CONCEPT_ID", "NAME", "USER_ID=$UserId");  
+      $count = count($aConcept);
         
         $lInteractive  =  (   ($lModifying==0 and $lMessage==0) ? 0 : 1);
 ?>

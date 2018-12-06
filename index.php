@@ -1,4 +1,4 @@
-<?php
+<?php
 
  session_start();
 
@@ -48,19 +48,11 @@ $conn = new Connection();
 $TypeSingleUsMess=0;
 $TypeSelectUsMess=1;
  
- 	
+$row = $conn->GetRow("USER", "USER_ID=$UserId"); 	
  
  
-    // считываем с сервера базовые параметры от
-        $sql = "SELECT * FROM USER WHERE USER_ID=$UserId";
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
 			      $ScoreMax= $row[SCOREMAX];
+                
                   $ScoreStep=$row[SCORESTEP];
                   $MonthlyShrinkage=$row[MSHRINKAGE];
                   $lSelect=$row[LSELECT];
@@ -77,9 +69,6 @@ $TypeSelectUsMess=1;
                   $lexTarget=$row[LEX_TARGET];
                   $lexSource=$row[LEX_SOURCE];
                   $SelectSize=$row[SEL_SIZE];
-                  // $SessionTime = $row[SESSION_TIME];   неочевидно. зачем нам на фронтенде эта переменная.
-             } 
-        }        
 
       
         
@@ -110,16 +99,17 @@ $TypeSelectUsMess=1;
                 $Kpd=0;
          }      
          
-          $sql = "UPDATE USER SET ".
-                 " SCOREMAX=$ScoreMax, SCORESTEP=$ScoreStep, MSHRINKAGE=$MonthlyShrinkage, LSELECT=$lSelect , LSTARTED=$lStarted ".
-                 ", CONC_SOURCE_ID=$ConceptSourceId,   CONC_TARGET_ID=$ConceptTargetId, SESSION_ID=$SessionId, SESSION_TIME=NOW() ".
-                 ", SUMSCORE=$SumScore, SUMFAIL=$SumFail,   KPD=$Kpd,   LRESULT=$lResult, SEL_SIZE=$SelectSize ".
-                 "WHERE USER_ID=$UserId";				
+         
+        $conn->UpdateTable("USER",
+                            Array(    
+                 "SCOREMAX"=>$ScoreMax, "SCORESTEP"=>$ScoreStep, "MSHRINKAGE"=>$MonthlyShrinkage, "LSELECT"=>$lSelect , "LSTARTED"=>$lStarted
+                 ), 
+                 "USER_ID=$UserId");				
 
-            $result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-//         echo "<p>Записали lStarted=$lStarted";
-
+                 /*
+                 ,"CONC_SOURCE_ID"=>$ConceptSourceId,   "CONC_TARGET_ID"=>$ConceptTargetId, "SESSION_ID"=>$SessionId, "SESSION_TIME"=>NOW(),
+                 "SUMSCORE"=>$SumScore, "SUMFAIL"=>$SumFail,   "KPD"=>$Kpd,   "LRESULT"=>$lResult, "SEL_SIZE"=$SelectSize
+                 */
         
 
   }      
@@ -130,43 +120,27 @@ $TypeSelectUsMess=1;
   {
       
             //этот кусок мы потом перенесем в фунцию. это вывод Source-параметров   
-                  $sql = " CALL GetSourceRec($UserId)  ";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
+                 $conn->Proc("GetSourceRec", Array($UserId));
                                 
                                 //??????????????? разбираться и видимо убрать то что выше
-                                
-                                
-                                        $sql = "SELECT * FROM USER WHERE USER_ID=$UserId";
-                                        $result = mysql_query($sql) 
-                                        or die('Query error: <code>'.$sql.'</code>');
-                                if ( is_resource($result) ) 
-                                    {
-			
-                                        while ( $row = mysql_fetch_assoc($result) )
-                                        {
+                 $row=$conn->GetRow("USER", "USER_ID=$UserId");                                
                                                 $lexSource= $row[LEX_SOURCE];
                                                 $Count = $row[COUNT];
                                                 $Average = $row[AVERAGE];
 
-                                        }    
-                                    }   
+                        
   // а если у нас стиль - выбор из, то нам надо и с массивом возможного выбора разбираться
                 if ($lSelect == 1)     
                 {
-                    $sql = " CALL GetSelectionArray($UserId)  ";
-                    $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
+                    $conn->Proc("GetSelectionArray", Array($UserId));
                 } 
   // очистим LexTarget и lResult и запишем lexSource
                 $lexTarget = "";    // '".$name."    '".$name."    '".$name."'
                 $lResult =0;  //  '".$lexTarget."'
-                $sql = "UPDATE USER SET ".
-                        "LEX_TARGET='".$lexTarget."'      ,LRESULT=$lResult ".
-                        "WHERE USER_ID=$UserId";				
-                 $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-            
+                
+                $conn->UpdateTable("USER",
+                                    Array("LEX_TARGET"=>$lexTarget,  "LRESULT"=>$lResult),
+                                           "USER_ID=$UserId");
 		
                         
   }   
@@ -174,15 +148,8 @@ $TypeSelectUsMess=1;
  
   if ($lStarted && ($lSelect == 1))
   {
-                                        $sql = "SELECT LEX_ID, TXT FROM USMESS WHERE USER_ID=$UserId AND LTYPE=$TypeSelectUsMess";
-                                        $result = mysql_query($sql);
-                                        while ( $row = mysql_fetch_assoc($result) )
-                                        {
-                                                $indx = $row[LEX_ID];
-                                                $aSelTarget[$indx]=   $row[TXT];
-                                                
-                                        }
-                            $countSelA = count($aSelTarget);
+                                $aSelTarget=$conn->GetColumn("USMESS","LEX_ID", "TXT", "USER_ID=$UserId AND LTYPE=$TypeSelectUsMess");                                              
+                                $countSelA = count($aSelTarget);
 
   }
 
@@ -219,11 +186,7 @@ $TypeSelectUsMess=1;
             
       }
  
-               
-               $sql = " CALL PutTargetRec($UserId,  '".$lexTarget."'  )  ";                 
-               $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-            
+               $conn->Proc("PutTargetRec", Array($UserId, $lexTarget));
   
 
   } 
@@ -232,21 +195,13 @@ $TypeSelectUsMess=1;
     if ($lStarted)            // здесь аккуратно считывается информация из трех баз и выводится в условно-мадальное окно
     {
                // конечно это окно методами тупого html не очень красиво. надо почитаь матчасть.
-                    $sql = "SELECT * FROM USER WHERE USER_ID=$UserId";
-                    $result = mysql_query($sql) 
-                        or die('Query error: <code>'.$sql.'</code>');
-                    if ( is_resource($result) ) 
-                        {
-			
-                            while ( $row = mysql_fetch_assoc($result) )
-                                {
-                                    $SumScore = $row[SUMSCORE];
-                                    $Kpd = $row[KPD];
-                                    $lResult=$row[LRESULT];
-                                    $Score= $row[SCORE];
-                                }   
+                    $row = $conn->GetRow("USER", "USER_ID=$UserId"); 	
+                           $SumScore = $row[SUMSCORE];
+                           $Kpd = $row[KPD];
+                           $lResult=$row[LRESULT];
+                           $Score= $row[SCORE];
                   // $SessionTime = $row[SESSION_TIME];   неочевидно. зачем нам на фронтенде эта переменная.
-                         } 
+                         
                         $aResult[0] =  "";         
                         $aResult[1] = "Ошибка";
                         $aResult[2] = "Верно";
@@ -259,25 +214,12 @@ $TypeSelectUsMess=1;
                         
                         $curClassResult  = $aResultClass[$lResult]; 
          // заполним справочник концептов
-                    $sql = "SELECT * FROM USMESS WHERE USER_ID=$UserId AND LTYPE=$TypeSingleUsMess";
-                    $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-                                
-                    $RightAnswerTitle = (lResult==1) ? "Правильный ответ" : "Дополнительные варианты";             
-                                
-                     if ( is_resource($result) ) 
-                    {
-                        while ( $row = mysql_fetch_assoc($result) )
-                        {
-                            
-                              if ( ($lResult==1) || ($row[LAUXILIARY]==1) ) 
-                                {
-                                  $aRightAnswer[]=$row[TXT];
-                                } 
-                        }
-                        
-                    } 
+         
+                    $RightAnswerTitle = (lResult==1) ? "Правильный ответ" : "Дополнительные варианты";      
                     
+//                    echo "<p>aRightAnswer";
+//                    echo "<p> TypeSingleUsMess=$TypeSingletUsMess";
+                    $aRightAnswer=$conn->GetOnlyColumn("USMESS", "TXT", "USER_ID=$UserId AND LTYPE=$TypeSingleUsMess AND ( ($lResult=1) OR (LAUXILIARY=1)           )");                                              
                     $countRA = count($aRightAnswer);
                     $lIsAnswerArray = (($lResult>0) AND ($countRA>0));
                     $RightAnswerTitle =
@@ -306,35 +248,10 @@ $TypeSelectUsMess=1;
        $CheckedFilling= $lSelect ? "": "checked";
 
   // заполним справочник концептов
-          
+   $aConceptSource=$conn->GetColumn("CONCEPT","CONCEPT_ID", "NAME", "USER_ID=$UserId");                                              
+   $aConceptTarget=$conn->GetColumn("CONCEPT","CONCEPT_ID", "NAME", "USER_ID=$UserId");       // в PHP нет нормальной функции клонирования массива. свою писать лень.
    $sql = "SELECT * FROM CONCEPT WHERE USER_ID=$UserId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
-			      $key = $row[CONCEPT_ID];
-                  $value =$row[NAME];
-                  $aConceptSource[$key]=$value;
-                  $aConceptTarget[$key]=$value;
-            }
-        }
-        
-//           <style type="text/css">
-//	      body {background-color: Beige;}
-//          fieldset {background-color: beige;}
-//          fieldset.manager  {background-color: beige ;}
-//          fieldset.lexems  {background-color: beige ;}
-//          #txt_right { color: green ; }
-//          #txt_wrong { color: red ; }
-//          #txt_thinking {  background-color:beige ; color: beige ; }
-//          #txt_good { color: green ; } 
-//          #txt_disclaimer { color: green ; } 
-//          #txt_stats { background-color: lavender; text-align: center   }
-//	    </style>
-        
+		
 ?>
 <html>
 <head>

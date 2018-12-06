@@ -17,23 +17,13 @@ $TypeComparUsMess = -1;
 $lEdit= 0;
  	
  
- 
     // считываем с сервера базовые параметры от
-        $sql = "SELECT * FROM USER WHERE USER_ID=$UserId";
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
+        $row=$conn->GetRow("USER", "USER_ID=$UserId");
                   $ConceptSourceId=$row[CONC_SOURCE_ID];
                   $ConceptTargetId=$row[CONC_TARGET_ID];
                   $lCompar=$row[LCOMPAR];
                   $lexSource=$row[COMP_SOURCE];
                   $lexTarget=$row[COMP_TARGET];
-             } 
-        }        
 
       
         
@@ -78,13 +68,7 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
       $lexSource=empty($_POST['lexSource']) ?  $lexSource : $_POST['lexSource'];
       $lexTarget=empty($_POST['lexTarget']) ?  $lexTarget : $_POST['lexTarget'];
 
-      $sql = " CALL SetDegree ('".$lexSource."', $ConceptSourceId, 
-                               '".$lexTarget."', $ConceptTargetId ) ";
-                               
-                       
-                               
-                                $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
+      $conn->Proc("SetDegree", Array( $lexSource, $ConceptSourceId, $lexTarget, $ConceptTargetId));  
      
                           
       $lexTarget='';
@@ -103,18 +87,12 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
       
               $lexSource=empty($_POST['lexSource']) ?  $lexSource : $_POST['lexSource'];
               
-
-      $sql = " CALL UnSetDegree ('".$lexSource."', $ConceptSourceId, 
-                               '".$selectTarget."', $ConceptTargetId ) ";
-                               
-                                
-        $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-              
+      $conn->Proc("UnSetDegree", Array($lexSource,  $ConceptSourceId, $selectTarget, $ConceptTargetId)); 
    
     
   }   
 
+ 
  if  ($lClearSource)  
  {
      $lEdit=1;
@@ -148,81 +126,31 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
 
     if ($lCompar==1)
     {
-
-            $sql = " CALL ArrangeLexSource ('".$lexSource."', $ConceptSourceId, $ConceptTargetId ) ";
-                                $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
+            $conn->Proc("ArrangeLexSource", Array( $lexSource,  $ConceptSourceId, $ConceptTargetId));
                                 
-         //  
          // заполним массив "таргетов"
-                    $sql = "SELECT * FROM USMESS WHERE USER_ID=$UserId AND LTYPE=$TypeComparUsMess";
-                    $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-                                
-             
-                                
-                     if ( is_resource($result) ) 
-                    {
-                        while ( $row = mysql_fetch_assoc($result) )
-                        {
-                                 $key = $row[LEX_ID];
-                                 $value =$row[TXT];
-                                 $aTarget[$key]=$value;
-
-                        }
-                        
-                    } 
-         
-             $countTarget = max(count($aTarget),4); 
-
-     
-  
+            $aTarget = $conn->GetColumn("USMESS", "LEX_ID", "TXT", "USER_ID=$UserId AND LTYPE=$TypeComparUsMess");
+            $countTarget = max(count($aTarget),4); 
     
     }   
   
     // заполним справочник концептов
-          
-   $sql = "SELECT * FROM CONCEPT WHERE USER_ID=$UserId"; 
-		$result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-		if ( is_resource($result) ) 
-		{
-			
-			while ( $row = mysql_fetch_assoc($result) )
-			{
-			      $key = $row[CONCEPT_ID];
-                  $value =$row[NAME];
-                  $aConceptSource[$key]=$value;
-                  $aConceptTarget[$key]=$value;
-            }
-        }
+        $aConceptSource=$conn->GetColumn("CONCEPT","CONCEPT_ID","NAME");
+        $aConceptTarget=$conn->GetColumn("CONCEPT","CONCEPT_ID","NAME");        
     
 
     if ($lEdit>0)
     {
-                 $sql = "UPDATE USER SET ".
-                 " CONC_SOURCE_ID=$ConceptSourceId,   CONC_TARGET_ID=$ConceptTargetId  ".
-                 ", LCOMPAR=$lCompar ".
-                 ", COMP_SOURCE='".$lexSource."'".
-                 ", COMP_TARGET='".$lexTarget."'".
-                 " WHERE USER_ID=$UserId";				
 
-                 
-            $result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
- 
-/*        
-                        $sql = "UPDATE USER SET ".
-                        "LEX_TARGET='".$lexTarget."'      ,LRESULT=$lResult ".
-                        "WHERE USER_ID=$UserId";				
-                 $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-*/
-        
+        $conn->UpdateTable("USER",Array("CONC_SOURCE_ID"=>$ConceptSourceId,   "CONC_TARGET_ID"=>$ConceptTargetId, 
+                                       "LCOMPAR"=>$lCompar,
+                                       "COMP_SOURCE"=>$lexSource,  COMP_TARGET=>$lexTarget),
+                 "USER_ID=$UserId");				
+
         
     }    
 
-    
+   
 ?>
 <html>
 <head>

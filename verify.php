@@ -55,22 +55,9 @@ if( ($UserId==0)  ||  ($_POST['f_logout'])){
     $password=$_POST['UserPassword'];
     
     
-    $sql = " SELECT  GetUserId("."'$login',"."'$password')"." AS UserId ";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-//    echo $sql;
-    if ( is_resource($result) ) 
-                                    {
-			
-                                        while ( $row = mysql_fetch_assoc($result) )
-                                        {
-                                                $_SESSION['UserId'] =$row[UserId];
-                                                $UserId=$row[UserId]; 
- 
-
-                                        }    
-                                    }
-       
+    $UserId=$conn->Func("GetUserId", Array( $login, $password));  
+    $_SESSION['UserId'] = $UserId;
+           
  
          // запоминаем имя пользователя
          if ($_SESSION['UserId'] > 0)

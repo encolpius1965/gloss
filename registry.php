@@ -13,18 +13,9 @@
         else 
         {
               $UserId=$_SESSION['UserId'];
-      
-             $sql = "SELECT   email FROM USER WHERE USER_ID=$UserId";
-		     $result = mysql_query($sql) 
-				  or die('Query error: <code>'.$sql.'</code>');
-                if ( is_resource($result) ) 
-                {
-						while ( $row = mysql_fetch_assoc($result) )
-                    {
-                            $_SESSION['email']= $row[email];
-                            $email = $_SESSION['email'];
-                    }		
-                }        
+              $row=$conn->GetRow("USER","USER_ID=$UserId");
+              $_SESSION['email']= $row['EMAIL'];
+              $email = $_SESSION['email'];
         }       
 
  
@@ -74,11 +65,12 @@
         $msg[] = "Логин не может быть пустым";
     }
     else 
-    {
-        $sql = " SELECT USER_ID FROM USER WHERE USER_ID != $UserId AND LOGIN='"."$login"."'";
-          $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-        $num_rows = mysql_num_rows($result);
+
+        {
+         
+         $num_rows=$conn->GetCount("USER", "USER_ID != $UserId AND LOGIN='"."$login"."'");   
+         
+
                         
         if ( $num_rows > 0 )
         {
@@ -99,23 +91,11 @@
     if ($lOK)
     {
        // регистрируем нового пользователя, даем ему базовый набор и уводим на главную страницу переводить с английского на русский
-    
-    $sql = " CALL  UpdateUserInstall( $UserId, "."'$login',"."'$password',"."'$email')";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
+       
+    $conn->Proc("UpdateUserInstall", Array($UserId,$login,$password,$email));
+    $_SESSION['UserId']=$conn->Func("GetUserId", Array($login,$password));
 
 
-    
-    $sql = " SELECT  GetUserId("."'$login',"."'$password')"." AS UserId ";
-                  $result = mysql_query($sql) 
-                                or die('Query error: <code>'.$sql.'</code>');
-    if ( is_resource($result) ) 
-                                    {
-                                        while ( $row = mysql_fetch_assoc($result) )
-                                        {
-                                                $_SESSION['UserId'] =$row[UserId];
-                                        }    
-                                    }
  
            $_SESSION['login'] = $login;
            $_SESSION['password'] = $password;     
