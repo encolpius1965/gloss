@@ -1,4 +1,4 @@
-<?php
+<?php
 
 
 class Connection 
@@ -15,13 +15,13 @@ function __construct()
 // error_reporting(E_ALL);
 
 // локальный MySQL
-/*
+
     $db_host = 'localhost';
 	$db_username = 'mysql';
 	$db_password = 'mysql';
 	$db_name = 'gloss1';
 	$db_charset = 'utf8'; 
- */ 
+ 
 /*
 // локальная Хероку    
     $db_host = 'localhost';
@@ -31,14 +31,14 @@ function __construct()
 	$db_charset = 'utf8';
 */
 // Реальная хероку
-
+/*
     $db_host = 'eu-cdbr-west-02.cleardb.net';
 	$db_username = 'b0f439327ec632';
 	$db_password = 'bf8363b2';
 	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
 
-  
+*/  
     
 //    echo "<p> 2__Before  Connection";
     
@@ -95,7 +95,7 @@ function GetRow ($tableName, $condition)
 
 function Proc ($ProcName, $aParms)
 {
-$strParms=$this->sParms($aParms);
+    $strParms=$this->sParms($aParms);
 
     $sql = "CALL $ProcName($strParms)";
     $result = $this->mysqli->query($sql);
@@ -106,7 +106,42 @@ $strParms=$this->sParms($aParms);
 
 }
 
+function vFunc($ProcName, $aInParms)
+{
+ // когда оказалось что от хранимых функций один геморрой  
+ // я переделал их в процедуры c возвращаемым параметром по имени ret 
+ //
+     
+     if  (count( $aInParms)>0)
+         $strParms=$this->sParms($aInParms).",";
+     else
+         $strParms="";
+     
 
+    $strParms.="@ret";      
+     
+     
+    $sql = "CALL $ProcName($strParms)";
+    $result = $this->mysqli->query($sql);
+     if (!$result) 
+         {     
+            die("Error : $sql")  ; 
+         }
+     
+         
+    $sql1 = "SELECT @ret AS Res";
+    $result1 = $this->mysqli->query($sql1);
+    if (!$result1) 
+        {     
+                die("Error :$sql1 after $sql"); 
+        }; 
+    $row = $result1->fetch_assoc();
+     
+    
+    
+    return $row[Res];  
+     
+}
 
 function Func ($funcName, $aParms)
 {
