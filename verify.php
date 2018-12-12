@@ -55,7 +55,10 @@ if( ($UserId==0)  ||  ($_POST['f_logout'])){
     $password=$_POST['UserPassword'];
     
     
-    $UserId=$conn->Func("GetUserId", Array( $login, $password));  
+    $UserId=$conn->vFunc("GetUserId", Array( $login, $password));  
+    
+    
+    
     $_SESSION['UserId'] = $UserId;
            
  

@@ -93,7 +93,7 @@
        // регистрируем нового пользователя, даем ему базовый набор и уводим на главную страницу переводить с английского на русский
        
     $conn->Proc("UpdateUserInstall", Array($UserId,$login,$password,$email));
-    $_SESSION['UserId']=$conn->Func("GetUserId", Array($login,$password));
+    $_SESSION['UserId']=$conn->vFunc("GetUserId", Array($login,$password));
 
 
  
