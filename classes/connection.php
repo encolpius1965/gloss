@@ -9,6 +9,8 @@ class Connection
 function __construct()
 { 
 
+
+// echo "NOS";
 # Запуск сессии
 // session_start();
 # Служит для отладки, показывает все ошибки, предупреждения и т.д.
@@ -48,11 +50,22 @@ function __construct()
     
    $mysqli = new mysqli($db_host, $db_username, $db_password, $db_name); // подключаемся к базе MySQL   
 
- // echo "<p> After DB Connection. ";
+//  echo "<p> After DB Connection. ";
 
  if ($mysqli->connect_error) {
     die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-}
+ }
+    
+    
+  if (!$mysqli->set_charset($db_charset)) {
+    die('Error : set_charset '. $mysqli->connect_error);  
+  }
+    
+    $charr=$mysqli->character_set_name();
+  //  echo "<p>$charr";
+  //  echo "<p>MOS1";
+  // printf("Текущий набор символов: %s\n", $mysqli->character_set_name());  
+
  
 
 $this->mysqli=$mysqli; 
