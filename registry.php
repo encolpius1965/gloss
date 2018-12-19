@@ -4,7 +4,7 @@
   header('Content-Type: text/html; charset=utf-8');
  // данные были отправлены формой?
  require_once( "classes/connection.php" );
- require_once( "util/util.php" );
+ require_once( "util/util.php" );
  $conn = new Connection();
     $lOK=1;
  $msg= array();
@@ -99,6 +99,7 @@
  
            $_SESSION['login'] = $login;
            $_SESSION['password'] = $password;     
+          setcookie("UserId",$UserId,  time()+10*365*24*60*60 ); 
            header("Location: index.php");
           exit;
           

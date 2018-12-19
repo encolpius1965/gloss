@@ -2,6 +2,30 @@
  // открываем сессию
  session_start();
   header('Content-Type: text/html; charset=utf-8');
+  /*
+            echo "Сессии <pre>";
+                print_r($_SESSION);
+                echo "</pre>";
+ 
+                echo "Куки <pre>";
+                print_r($_COOKIE);
+            echo "</pre>";
+            */
+
+/*
+if (!isset($_SESSION['UserId']))  
+                header('Location: concept.php');   
+                // $UserId = 1;
+        else 
+               $UserId=$_SESSION['UserId'];
+
+*/
+
+  
+  
+  
+  
+  
  // данные были отправлены формой?
  require_once( "classes/connection.php" );
  $conn = new Connection();
@@ -60,15 +84,15 @@ if( ($UserId==0)  ||  ($_POST['f_logout'])){
     
     
     $_SESSION['UserId'] = $UserId;
-           
  
          // запоминаем имя пользователя
          if ($_SESSION['UserId'] > 0)
          {
            ;
          
-          $_SESSION['login'] = $login;
+           $_SESSION['login'] = $login;
            $_SESSION['password'] = $password;
+           setcookie("UserId",$UserId,  time()+10*365*24*60*60 );          
         
            header("Location: index.php");
           exit;

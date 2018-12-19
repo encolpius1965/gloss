@@ -1,33 +1,23 @@
-<?php
+<?phpfunction GetUserId(){// проверяем наличие корректного UserId по массивам SESSION и COOKIES       $ret=0;        if (isset($_SESSION['UserId']))                  $ret=$_SESSION['UserId'];        if ($ret==0)    {        if  (isset($_COOKIE['UserId']))                  $ret=$_COOKIE['UserId'];    }        /*                echo "Сессии <pre>";                print_r($_SESSION);                echo "</pre>";                 echo "Куки <pre>";                print_r($_COOKIE);            echo "</pre>";    */    return $ret;    }
 
  session_start();
-
 
 
 header('Content-Type: text/html; charset=utf-8');
 
 
+$UserId =  GetUserId();
 
 
-
-if (!isset($_SESSION['UserId'])     OR ($_SESSION['UserId']==0)        )       
+if     (!UserId)   
                 header('Location: verify.php');   
                 // $UserId = 1;
-        else 
-               $UserId=$_SESSION['UserId'];
 
-
+                      
 require_once( "classes/connection.php" );
 
-/*
-            echo "Сессии <pre>";
-                print_r($_SESSION);
-                echo "</pre>";
- 
-                echo "Куки <pre>";
-                print_r($_COOKIE);
-            echo "</pre>";
-*/
+
+
 
 /*
 if (!isset($_SESSION['UserId']))  
@@ -99,7 +89,7 @@ $row = $conn->GetRow("USER", "USER_ID=$UserId");
                 $Kpd=0;
          }      
          
-         
+         
         $conn->UpdateTable("USER",
                             Array(    
                  "SCOREMAX"=>$ScoreMax, "SCORESTEP"=>$ScoreStep, "MSHRINKAGE"=>$MonthlyShrinkage, "LSELECT"=>$lSelect , "LSTARTED"=>$lStarted
