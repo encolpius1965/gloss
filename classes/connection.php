@@ -17,13 +17,13 @@ function __construct()
 // error_reporting(E_ALL);
 
 // локальный MySQL
-/*
+
     $db_host = 'localhost';
 	$db_username = 'mysql';
 	$db_password = 'mysql';
 	$db_name = 'gloss1';
 	$db_charset = 'utf8'; 
- */
+
 /*
 // локальная Хероку    
     $db_host = 'localhost';
@@ -33,13 +33,13 @@ function __construct()
 	$db_charset = 'utf8';
 */
 // Реальная хероку
-
+/*
     $db_host = 'eu-cdbr-west-02.cleardb.net';
 	$db_username = 'b0f439327ec632';
 	$db_password = 'bf8363b2';
 	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
-
+*/
   
     
 //    echo "<p> 2__Before  Connection";
@@ -76,16 +76,16 @@ $this->mysqli=$mysqli;
 function GetCount ($tableName, $condition)
 {
     /* строка из таблицы */
-  $sql = "SELECT COUNT(*) FROM $tableName WHERE $condition";
+  $sql = "SELECT COUNT(*) FROM $tableName WHERE $condition";  
   $result = $this->mysqli->query($sql);
 
  if (!$result)  {
      die("Error : $sql");
  }
   
-  $ret = $result->fetch_row();
-  $result->free();
- return $ret; 
+  $ret = $result->fetch_row();  
+  $result->free();  
+ return $ret[0]; 
 } 
 
 
