@@ -9,7 +9,7 @@ header('Content-Type: text/html; charset=utf-8');
 $UserId =  GetUserId();
 echo "<p>UserId=$UserId";
 
-if     (!UserId)   
+if     (UserId==0)   
                 header('Location: verify.php');   
                 // $UserId = 1;
 
