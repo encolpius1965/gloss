@@ -22,8 +22,7 @@ function __construct()
 	$db_username = 'mysql';
 	$db_password = 'mysql';
 	$db_name = 'gloss1';
-	$db_charset = 'utf8'; 
-
+	$db_charset = 'utf8'; 
 /*
 // локальная Хероку    
     $db_host = 'localhost';
@@ -33,13 +32,13 @@ function __construct()
 	$db_charset = 'utf8';
 */
 // Реальная хероку
-/*
+
     $db_host = 'eu-cdbr-west-02.cleardb.net';
 	$db_username = 'b0f439327ec632';
 	$db_password = 'bf8363b2';
 	$db_name = 'heroku_846065d530579e0';
 	$db_charset = 'utf8';
-*/
+
   
     
 //    echo "<p> 2__Before  Connection";
