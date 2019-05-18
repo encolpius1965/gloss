@@ -1,4 +1,4 @@
-<?phprequire_once( "util/util.php" );
+<?phpecho("<p> NOS");require_once( "util/util.php" );
 
  session_start();
 
