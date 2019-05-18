@@ -1,4 +1,4 @@
-<?php require_once( "util/util.php" ); require_once( "classes/connection.php" );// echo("<p> NOS");header('Content-Type: text/html; charset=utf-8');// $UserId=1;$UserId =  GetUserId();		if     ($UserId==0)                   header('Location: verify.php');                   // $UserId = 1;$conn = new Connection();                        
+<?php require_once( "util/util.php" ); require_once( "classes/connection.php" );// echo("<p> NOS");header('Content-Type: text/html; charset=utf-8');$UserId =  GetUserId();		if     ($UserId==0)                   header('Location: verify.php');   // $conn = new Connection();                        
 ?>
 <html>
 <head>
