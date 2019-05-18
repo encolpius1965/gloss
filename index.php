@@ -1,4 +1,4 @@
-<?php require_once( "util/util.php" );// echo("<p> NOS");		
+<?php require_once( "util/util.php" ); require_once( "classes/connection.php" );// echo("<p> NOS");		
 ?>
 <html>
 <head>
