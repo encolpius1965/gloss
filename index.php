@@ -4,9 +4,9 @@
 // require_once( "util/util.php" );
 
 header('Content-Type: text/html; charset=utf-8');
+$UserId=1;
 
-
-$UserId =  GetUserId();
+// $UserId =  GetUserId();
 // echo "<p>UserId=$UserId";
 
 if     ($UserId==0)   
