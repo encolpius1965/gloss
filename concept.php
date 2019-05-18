@@ -1,5 +1,5 @@
 <?php
-
+require_once( "util/util.php" );
 class ConceptEdit
 {
  private $UserId;   
@@ -15,7 +15,7 @@ require_once( "classes/connection.php" );
 $conn = new Connection();
 
 
-$UserId =    $conn->GetUserId()  ;
+$UserId = GetUserId()  ;
 $o = new ConceptEdit ($UserId);
 
 
@@ -190,7 +190,9 @@ if  (!empty($_POST['f_reset']))  // отработка
   // заполним справочник концептов
       $aConcept=$conn->GetColumn("CONCEPT", "CONCEPT_ID", "NAME", "USER_ID=$UserId");  
       $count = count($aConcept);
-        
+      
+// echo("<p> UserId=$UserId");    
+// print_r($aConcept);      
         $lInteractive  =  (   ($lModifying==0 and $lMessage==0) ? 0 : 1);
 ?>
 <html>

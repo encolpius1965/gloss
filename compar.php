@@ -1,5 +1,5 @@
 <?php
-
+require_once( "util/util.php" );
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 
@@ -12,7 +12,7 @@ require_once( "classes/connection.php" );
 
 $conn = new Connection();
 
-$UserId =    $conn->GetUserId()  ;  
+$UserId = GetUserId()  ;  
 
 $TypeComparUsMess = -1;
 
@@ -137,9 +137,9 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
     }   
   
     // заполним справочник концептов
-        $aConceptSource=$conn->GetColumn("CONCEPT","CONCEPT_ID","NAME");
-        $aConceptTarget=$conn->GetColumn("CONCEPT","CONCEPT_ID","NAME");        
-    
+        $aConceptSource=$conn->GetColumn("CONCEPT", "CONCEPT_ID", "NAME", "USER_ID=$UserId");
+        $aConceptTarget=$conn->GetColumn("CONCEPT", "CONCEPT_ID", "NAME", "USER_ID=$UserId");
+        
 
     if ($lEdit>0)
     {

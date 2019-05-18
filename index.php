@@ -1,4 +1,4 @@
-<?phpfunction GetUserId(){// проверяем наличие корректного UserId по массивам SESSION и COOKIES       $ret=0;        if (isset($_SESSION['UserId']))                  $ret=$_SESSION['UserId'];        if ($ret==0)    {        if  (isset($_COOKIE['UserId']))                  $ret=$_COOKIE['UserId'];    }    /*                    echo "Сессии <pre>";                print_r($_SESSION);                echo "</pre>";                 echo "Куки <pre>";                print_r($_COOKIE);            echo "</pre>";  */      return $ret;    }
+<?phprequire_once( "util/util.php" );
 
  session_start();
 
