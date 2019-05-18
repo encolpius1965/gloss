@@ -1,4 +1,4 @@
-<?php// echo("<p> NOS");		
+<?php require_once( "util/util.php" );// echo("<p> NOS");		
 ?>
 <html>
 <head>
