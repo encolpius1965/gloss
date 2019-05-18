@@ -156,7 +156,7 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
 ?>
 <html>
 <head>
-    <title>!Пополнение словарей</title>
+    <title>Пополнение словарей</title>
     <link rel="stylesheet" href="style.css" type="text/css">
 
 </head>
