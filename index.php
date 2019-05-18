@@ -1,7 +1,7 @@
-<?phpecho("<p> NOS");
+<?php// echo("<p> NOS");function GetUserId(){// проверяем наличие корректного UserId по массивам SESSION и COOKIES       $ret=0;        if (isset($_SESSION['UserId']))                  $ret=$_SESSION['UserId'];        if ($ret==0)    {        if  (isset($_COOKIE['UserId']))                  $ret=$_COOKIE['UserId'];    }        return $ret;    }
 
  session_start();
-require_once( "util/util.php" );
+// require_once( "util/util.php" );
 
 header('Content-Type: text/html; charset=utf-8');
 
