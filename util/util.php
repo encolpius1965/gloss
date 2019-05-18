@@ -18,5 +18,21 @@ function RandDigitStr ($length)
  } 
  return $ret;
 }    
+function GetUserId()
+{
+// проверяем наличие корректного UserId по массивам SESSION и COOKIES   
+    $ret=0;
+    
+    if (isset($_SESSION['UserId']))
+                  $ret=$_SESSION['UserId'];
+    
+    if ($ret==0)
+    {
+        if  (isset($_COOKIE['UserId']))
+                  $ret=$_COOKIE['UserId'];
+    }
+    
+    return $ret;    
+}
 
 ?>
