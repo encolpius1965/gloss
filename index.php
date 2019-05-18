@@ -34,7 +34,6 @@ $conn = new Connection();
 
 
 
-
 $TypeSingleUsMess=0;
 $TypeSelectUsMess=1;
  
@@ -92,8 +91,7 @@ $row = $conn->GetRow("USER", "USER_ID=$UserId");
          
         $conn->UpdateTable("USER",
                             Array(    
-                 "SCOREMAX"=>$ScoreMax, "SCORESTEP"=>$ScoreStep, "MSHRINKAGE"=>$MonthlyShrinkage, "LSELECT"=>$lSelect , "LSTARTED"=>$lStarted
-                 ), 
+                 "SCOREMAX"=>$ScoreMax, "SCORESTEP"=>$ScoreStep, "MSHRINKAGE"=>$MonthlyShrinkage, "LSELECT"=>$lSelect , "LSTARTED"=>$lStarted,                                   "CONC_SOURCE_ID"=>$ConceptSourceId,   "CONC_TARGET_ID"=>$ConceptTargetId, "SESSION_ID"=>$SessionId,                 "SUMSCORE"=>$SumScore, "SUMFAIL"=>$SumFail,   "KPD"=>$Kpd,   "LRESULT"=>$lResult, "SEL_SIZE"=>$SelectSize                 ), 
                  "USER_ID=$UserId");				
 
                  /*
@@ -139,7 +137,7 @@ $row = $conn->GetRow("USER", "USER_ID=$UserId");
   if ($lStarted && ($lSelect == 1))
   {
                                 $aSelTarget=$conn->GetColumn("USMESS","LEX_ID", "TXT", "USER_ID=$UserId AND LTYPE=$TypeSelectUsMess");                                              
-                                $countSelA = count($aSelTarget);
+                                $countSelA = count($aSelTarget);   //                             print_r($aSelTarget);
 
   }
 
@@ -359,7 +357,7 @@ foreach($aConceptTarget as $indx => $text)
         Размерность выбора (для одноименного стиля): <input type=text name="SelectSize" value=<?=$SelectSize?>> <br><br>      
         </fieldset>
    <p><a href="concept.php">Модифицировать список понятий</a>
-             <a href="compar.php">        Пополнить словари</a>
+             <a href="compar.php?idd=3">        Пополнить словари</a>
               <a href="verify.php">        Учетная запись</a>
 
    </p>
