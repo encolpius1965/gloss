@@ -5,7 +5,9 @@ header('Content-Type: text/html; charset=utf-8');
 
 require_once( "classes/connection.php" );
 
- 
+ 
+
+
 
 
 $conn = new Connection();
@@ -120,13 +122,13 @@ if (  ($lSetSource==1) && ($lCompar==1))    // т.е. нажата кнопка 
          $lCompar=1;
        } 
       //  echo "Выходим  lCompar=$lCompar  $countTarget =countTarget ";
-  } 
+  } 
 
 
 
     if ($lCompar==1)
     {
-            $conn->Proc("ArrangeLexSource", Array( $lexSource,  $ConceptSourceId, $ConceptTargetId));
+            $conn->Proc("ArrangeLexSource", Array( $lexSource,  $ConceptSourceId,$ConceptTargetId));
                                 
          // заполним массив "таргетов"
             $aTarget = $conn->GetColumn("USMESS", "LEX_ID", "TXT", "USER_ID=$UserId AND LTYPE=$TypeComparUsMess");
