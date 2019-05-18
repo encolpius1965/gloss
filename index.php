@@ -1,7 +1,7 @@
-<?phpecho("<p> NOS");require_once( "util/util.php" );
+<?phpecho("<p> NOS");
 
  session_start();
-
+require_once( "util/util.php" );
 
 header('Content-Type: text/html; charset=utf-8');
 
