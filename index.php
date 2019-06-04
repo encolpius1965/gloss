@@ -6,7 +6,7 @@
 header('Content-Type: text/html; charset=utf-8');
 // $UserId=1;
 
-$UserId =  GetUserId();
+$UserId =  GetUserId();// $email='encolpius@yandex.ru';$login='encolpius';$password='Жопа мира'; $lOK = mail( "$email", "Lost Data", " Ваш логин $login \n Новый пароль $password"); echo ("<p> Отправка письма lOK=$lOK");// 
 // echo "<p>UserId=$UserId";
 
 if     ($UserId==0)   
